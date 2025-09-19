@@ -12,8 +12,8 @@ const TaskEmptyState = (filter) => {
                         {filter === "active"
                             ? "Không có nhiệm vụ nào đang làm."
                             : filter === "completed"
-                                ? "Chưa có nhiệm vụ nào hoàn thành."
-                                : "Chưa có nhiệm vụ."}
+                                ? "Chưa có nhiệm vụ."
+                                : "Chưa có nhiệm vụ nào hoàn thành."}
                     </h3>
 
                     <p className="text-sm text-muted-foreground">

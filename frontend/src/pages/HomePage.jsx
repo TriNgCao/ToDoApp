@@ -5,8 +5,49 @@ import Header from '@/components/Header'
 import StatsAndFilter from '@/components/StatsAndFilter'
 import TaskList from '@/components/TaskList'
 import TaskListPagination from '@/components/TaskListPagination'
+import axios from 'axios'
+import { use, useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 const HomePage = () => {
+
+    const [taskBuffer, setTaskBuffer] = useState([]);
+    const [activeTasksCount, setActiveTasksCount] = useState(0);
+    const [completeTasksCount, setCompleteTasksCount] = useState(0);
+    const [filter, setFilter] = useState('all');
+
+    useEffect(() => {
+        fetchTasks();
+    }, []);
+
+    const fetchTasks = async () => {
+        try {
+            const res = await axios.get("http://localhost:5001/api/tasks");
+
+            setTaskBuffer(res.data.tasks);
+            setActiveTasksCount(res.data.activeCount);
+            setCompleteTasksCount(res.data.comleteCount);
+            console.log(res.data);
+        } catch (error) {
+            console.error("Fetching error:", error);
+            toast.error("Loading error");
+        }
+    }
+
+
+    //bien luu danh sach da loc
+    const filteredTasks = taskBuffer.filter((task) => {
+        switch (filter) {
+            case "active":
+                return task.status === "active";
+            case "completed":
+                return task.status === "complete";
+            default:
+                return true;
+        }
+    }
+    );
+
     return (
 
         <div className="min-h-screen w-full bg-white relative overflow-hidden">
@@ -37,14 +78,22 @@ const HomePage = () => {
                 <div className='w-full max-w-2xl p-6 mx-auto space-y-6'>
                     <Header />
                     <AddTask />
-                    <StatsAndFilter />
-                    <TaskList />
+                    <StatsAndFilter
+                        filter={filter}
+                        setFilter={setFilter}
+                        activeTasksCount={activeTasksCount} completedTasksCount={completeTasksCount} />
+                    <TaskList
+                        filter={filter}
+                        filteredTasks={filteredTasks}
+                    />
                     <div className='flex flex-col items-center gap-6 justify-between sm:flex-row'>
                         <TaskListPagination />
                         <DateTimeFilter />
                     </div>
 
-                    <Footer />
+                    <Footer
+                        activeTasksCount={activeTasksCount} completedTasksCount={completeTasksCount}
+                    />
                 </div>
 
             </div>

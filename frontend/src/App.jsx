@@ -5,14 +5,15 @@ import NotFound from './pages/NotFound'
 
 function App() {
   return (
-    <div>
+    <>
+      <Toaster richColors />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
-    </div>
+    </>
   )
 }
 

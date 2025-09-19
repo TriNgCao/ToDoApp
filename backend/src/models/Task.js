@@ -9,18 +9,18 @@ const taskSchema = new mongoose.Schema(
         },
         status: {
             type: String,
-            enum: ['pending', 'in-progress', 'completed'],
-            default: 'pending',
+            enum: ["active", "complete"],
+            default: "active",
         },
         completedAt: {
             type: Date,
             default: null,
         },
-
     },
     {
-        timestamps: true,
+        timestamps: true, // createdAt và updatedAt tự động thêm vào
     }
 );
-const Task = mongoose.model('Task', taskSchema);
+
+const Task = mongoose.model("Task", taskSchema);
 export default Task;

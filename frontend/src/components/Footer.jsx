@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Footer = ({ completedTasksCount = 2, activeTasksCount = 3 }) => {
+const Footer = ({ completedTasksCount = 0, activeTasksCount = 0 }) => {
     return <>
         {completedTasksCount + activeTasksCount > 0 && (
             <div className="text-center">
