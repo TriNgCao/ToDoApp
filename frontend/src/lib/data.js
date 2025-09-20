@@ -1,5 +1,5 @@
 export const FilterType = {
     all: "All",
-    active: "On-going",
+    active: "Active",
     completed: "Completed"
 };

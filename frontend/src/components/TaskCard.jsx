@@ -3,9 +3,66 @@ import { Button } from './ui/button';
 import { Calendar, CheckCircle2, Circle, SquarePen, Trash2 } from 'lucide-react';
 import { Input } from './ui/input';
 import { cn } from '@/lib/utils';
+import api from '@/lib/axios';
+import { toast } from 'sonner';
+import { useState } from 'react';
 
-const TaskCard = ({ task, index }) => {
-    let idEditing = false;
+const TaskCard = ({ task, index, handleTaskChanged }) => {
+    const [isEditing, setIsEditting] = useState(false);
+
+    const [updateTask, setUpdateTask] = useState(task.title || "");
+
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            update();
+        }
+    }
+
+
+    const toggleTaskCompleteButton = async () => {
+        try {
+            if (task.status === "active") {
+                await api.put(`/tasks/${task._id}`, {
+                    status: "complete",
+                    completedAt: new Date().toISOString()
+                });
+                toast.success(`${task.title} đã được hoàn thành`)
+            } else {
+                await api.put(`/tasks/${task._id}`, {
+                    status: "active",
+                    completedAt: null
+                });
+                toast.success(`${task.title} đã đổi sang chưa hoàn thành`)
+            }
+            handleTaskChanged();
+        } catch (error) {
+            toast.error("Updating Error");
+        }
+    }
+
+    const update = async () => {
+        try {
+            setIsEditting(false);
+            await api.put(`/tasks/${task._id}`, {
+                title: updateTask
+            });
+            toast.success('Nhiem vu da duoc cap nhat');
+            handleTaskChanged();
+        } catch (error) {
+            toast.error("Updating Error");
+        }
+    }
+
+    const deleteTask = async (taskId) => {
+        try {
+            await api.delete(`/tasks/${taskId}`);
+            toast.success('Nhiem vu da duoc xoa');
+            handleTaskChanged();
+        } catch (error) {
+            toast.error("Deleting Error");
+        }
+    }
+
     return (
         <Card className={cn(
             "p-4 bg-gradient-card border-0 shadow-custom-md hover:shadow-custom-lg transition-all duration-200 animate-fade-in group",
@@ -15,6 +72,7 @@ const TaskCard = ({ task, index }) => {
         >
             <div className="flex items-center gap-4">
                 <Button
+                    onClick={toggleTaskCompleteButton}
                     variant="ghost"
                     size="icon"
                     className={cn(
@@ -33,11 +91,18 @@ const TaskCard = ({ task, index }) => {
                 </Button>
 
                 <div className="flex-1 min-w-0">
-                    {idEditing ? (
+                    {isEditing ? (
                         <Input
                             placeholder='task to do'
                             className='flex-1 h-12 text-base border-border/50 focus:border-primary/50 focus:ring-primary/20'
                             type="text"
+                            value={updateTask}
+                            onChange={(event) => setUpdateTask(event.target.value)}
+                            onKeyPress={handleKeyPress}
+                            onBlur={() => {
+                                setIsEditting(false);
+                                setUpdateTask(task.title || "");
+                            }}
                         />
                     ) : (
                         <p className={
@@ -80,7 +145,10 @@ const TaskCard = ({ task, index }) => {
                         variant="ghost"
                         size="icon"
                         className="flex-shrink-0 transition-colors size-8 text-muted-foreground hover:text-info"
-
+                        onClick={() => {
+                            setIsEditting(true);
+                            setUpdateTask(task.title || "");
+                        }}
                     >
                         <SquarePen className="size-4" />
                     </Button>
@@ -90,7 +158,7 @@ const TaskCard = ({ task, index }) => {
                         variant="ghost"
                         size="icon"
                         className="flex-shrink-0 transition-colors size-8 text-muted-foreground hover:text-destructive"
-
+                        onClick={() => deleteTask(task._id)}
                     >
                         <Trash2 className="size-4" />
                     </Button>

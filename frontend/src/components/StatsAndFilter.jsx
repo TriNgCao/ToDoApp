@@ -1,13 +1,18 @@
-import { FilterType } from '@/lib/data'
-import { Filter } from 'lucide-react'
-import { Button } from './ui/button'
+import React from "react";
 import { Badge } from "./ui/badge";
+import { FilterType } from "@/lib/data";
+import { Filter } from "lucide-react";
+import { Button } from "./ui/button";
 
-const StatsAndFilter = ({ completedTasksCount = 0, activeTasksCount = 0, filter = "all", setFilter }) => {
+const StatsAndFilters = ({
+    completedTasksCount = 0,
+    activeTasksCount = 0,
+    filter = "all",
+    setFilter,
+}) => {
     return (
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-
-
+            {/* phần thống kê */}
             <div className="flex gap-3">
                 <Badge
                     variant="secondary"
@@ -23,8 +28,7 @@ const StatsAndFilter = ({ completedTasksCount = 0, activeTasksCount = 0, filter 
                 </Badge>
             </div>
 
-
-
+            {/* phần filter */}
             <div className="flex flex-col gap-2 sm:flex-row">
                 {Object.keys(FilterType).map((type) => (
                     <Button
@@ -40,7 +44,7 @@ const StatsAndFilter = ({ completedTasksCount = 0, activeTasksCount = 0, filter 
                 ))}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default StatsAndFilter
+export default StatsAndFilters;

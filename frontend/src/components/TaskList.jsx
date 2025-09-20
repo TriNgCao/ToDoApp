@@ -2,7 +2,7 @@ import TaskCard from "./TaskCard";
 import TaskEmptyState from "./TaskEmptyState";
 
 
-const TaskList = ({ filteredTasks, filter }) => {
+const TaskList = ({ filteredTasks, filter, handleTaskChanged }) => {
 
 
     if (!filteredTasks || filteredTasks.length === 0) {
@@ -17,6 +17,7 @@ const TaskList = ({ filteredTasks, filter }) => {
                         key={task._id ?? index}
                         task={task}
                         index={index}
+                        handleTaskChanged={handleTaskChanged}
                     />
                 )
 

@@ -1,8 +1,8 @@
-import React from 'react'
-import { Card } from './ui/card'
-import { Circle } from 'lucide-react'
+import React from "react";
+import { Card } from "./ui/card";
+import { Circle } from "lucide-react";
 
-const TaskEmptyState = (filter) => {
+const TaskEmptyState = ({ filter }) => {
     return (
         <Card className="p-8 text-center border-0 bg-gradient-card shadow-custom-md">
             <div className="space-y-3">
@@ -12,8 +12,8 @@ const TaskEmptyState = (filter) => {
                         {filter === "active"
                             ? "Không có nhiệm vụ nào đang làm."
                             : filter === "completed"
-                                ? "Chưa có nhiệm vụ."
-                                : "Chưa có nhiệm vụ nào hoàn thành."}
+                                ? "Chưa có nhiệm vụ nào hoàn thành."
+                                : "Chưa có nhiệm vụ."}
                     </h3>
 
                     <p className="text-sm text-muted-foreground">
@@ -25,7 +25,7 @@ const TaskEmptyState = (filter) => {
                 </div>
             </div>
         </Card>
-    )
-}
+    );
+};
 
-export default TaskEmptyState
+export default TaskEmptyState;

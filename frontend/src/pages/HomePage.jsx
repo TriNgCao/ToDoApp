@@ -5,7 +5,7 @@ import Header from '@/components/Header'
 import StatsAndFilter from '@/components/StatsAndFilter'
 import TaskList from '@/components/TaskList'
 import TaskListPagination from '@/components/TaskListPagination'
-import axios from 'axios'
+import api from '@/lib/axios'
 import { use, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -22,7 +22,7 @@ const HomePage = () => {
 
     const fetchTasks = async () => {
         try {
-            const res = await axios.get("http://localhost:5001/api/tasks");
+            const res = await api.get("/tasks");
 
             setTaskBuffer(res.data.tasks);
             setActiveTasksCount(res.data.activeCount);
@@ -47,6 +47,11 @@ const HomePage = () => {
         }
     }
     );
+
+    const handleTaskChange = () => {
+        fetchTasks();
+
+    }
 
     return (
 
@@ -77,7 +82,7 @@ const HomePage = () => {
             <div className='container mx-auto pt-8 relative z-10'>
                 <div className='w-full max-w-2xl p-6 mx-auto space-y-6'>
                     <Header />
-                    <AddTask />
+                    <AddTask handleNewTaskAdded={handleTaskChange} />
                     <StatsAndFilter
                         filter={filter}
                         setFilter={setFilter}
@@ -85,6 +90,7 @@ const HomePage = () => {
                     <TaskList
                         filter={filter}
                         filteredTasks={filteredTasks}
+                        handleTaskChanged={handleTaskChange}
                     />
                     <div className='flex flex-col items-center gap-6 justify-between sm:flex-row'>
                         <TaskListPagination />
