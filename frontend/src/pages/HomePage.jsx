@@ -6,6 +6,7 @@ import StatsAndFilter from '@/components/StatsAndFilter'
 import TaskList from '@/components/TaskList'
 import TaskListPagination from '@/components/TaskListPagination'
 import api from '@/lib/axios'
+import { visibleTaskLimit } from '@/lib/data'
 import { use, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -17,9 +18,16 @@ const HomePage = () => {
     const [filter, setFilter] = useState('all');
     const [dateQuery, setDateQuery] = useState('today');
 
+    const [page, setPage] = useState(1);
+
     useEffect(() => {
         fetchTasks();
     }, [dateQuery]);
+
+    useEffect(() => {
+        setPage(1);
+    }, [filter, dateQuery]);
+
 
     const fetchTasks = async () => {
         try {
@@ -36,6 +44,26 @@ const HomePage = () => {
     }
 
 
+
+
+
+
+    const handleNext = () => {
+        if (page < totalPages) {
+            setPage((prev) => prev + 1);
+        }
+    };
+
+    const handlePrev = () => {
+        if (page > 1) {
+            setPage((prev) => prev - 1);
+        }
+    };
+
+    const handlePageChanged = (newPage) => {
+        setPage(newPage);
+    }
+
     //bien luu danh sach da loc
     const filteredTasks = taskBuffer.filter((task) => {
         switch (filter) {
@@ -48,6 +76,16 @@ const HomePage = () => {
         }
     }
     );
+
+
+    const visibleTasks = filteredTasks.slice(
+        (page - 1) * visibleTaskLimit,
+        page * visibleTaskLimit
+    );
+    if (visibleTasks.length === 0) {
+        handlePrev();
+    }
+    const totalPages = Math.ceil(filteredTasks.length / visibleTaskLimit);
 
     const handleTaskChange = () => {
         fetchTasks();
@@ -90,11 +128,17 @@ const HomePage = () => {
                         activeTasksCount={activeTasksCount} completedTasksCount={completeTasksCount} />
                     <TaskList
                         filter={filter}
-                        filteredTasks={filteredTasks}
+                        filteredTasks={visibleTasks}
                         handleTaskChanged={handleTaskChange}
                     />
                     <div className='flex flex-col items-center gap-6 justify-between sm:flex-row'>
-                        <TaskListPagination />
+                        <TaskListPagination
+                            handleNext={handleNext}
+                            handlePrev={handlePrev}
+                            handlePageChange={handlePageChanged}
+                            page={page}
+                            totalPages={totalPages}
+                        />
                         <DateTimeFilter
                             dateQuery={dateQuery}
                             setDateQuery={setDateQuery}
